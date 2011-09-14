@@ -15,9 +15,14 @@
     <div class="yui-u first">
 
       <% unless @product.has_variants? %>
+      <% 
+      	@mas_products = MasProduct.all
+      	@existing_products = MasProduct.all(:joins => :spree_product_variants)
+      	@new_products = @mas_products - @existing_products
+      %>
       <%= f.field_container :sku do %>
         <%= f.label :sku, t("sku") %><br />
-        <%= f.collection_select :sku, MasProduct.all, :ItemNumber, :ItemNumber, :include_blank => '-Unassigned-' %>
+        <%= f.collection_select :sku, @new_products, :ItemNumber, :ItemNumber, :include_blank => '-Unassigned-' %>
         <%= f.error_message_on :sku %>
       <% end %>
       <% end %>
@@ -51,3 +56,18 @@
 </fieldset>
 <% end %>
 <%= javascript_tag "datePickerController.create();" %>
+
+<script type="text/javascript">    
+jQuery("#product_sku").change(function() {
+	product_sku = $(this).val();
+
+	$.ajax({
+		url: "/mas_products/" + product_sku + ".json",
+		success: function(data) {
+				$("#product_name").val(data['mas_product'].ItemDescription);
+				$("#product_price").val(data['mas_product'].StdPrice);
+		  }
+  	});
+ }); 
+</script>
+
