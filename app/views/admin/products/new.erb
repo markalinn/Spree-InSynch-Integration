@@ -16,8 +16,8 @@
 
       <% unless @product.has_variants? %>
       <% 
-      	@mas_products = MasProduct.all
-      	@existing_products = MasProduct.all(:joins => :spree_product_variants)
+      	@mas_products = MasProduct.all(:order => 'ItemNumber')
+      	@existing_products = MasProduct.all(:joins => :product, :conditions => 'products.deleted_at is NULL')
       	@new_products = @mas_products - @existing_products
       %>
       <%= f.field_container :sku do %>
