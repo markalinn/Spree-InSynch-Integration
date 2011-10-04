@@ -1,9 +1,26 @@
 Product.class_eval do
+  has_one :mas_product, :through => :master
   before_create :find_existing_deleted_sku
   after_create :populate_with_mas_data
 
+  def cost_price
+    self.mas_product.StdCost.to_f if self.mas_product
+  end
+
+  def price
+    self.mas_product.StdPrice.to_f if self.mas_product
+  end
+
+  def weight
+    self.mas_product.Weight.to_f if self.mas_product
+  end
+
+  def count_on_hand
+    self.mas_product.TotalQtyOnHand.to_i if self.mas_product
+  end
+
 private
-  
+
   def find_existing_deleted_sku
     if self.sku
       existing_deleted_variant = Variant.find(:first, :joins => :product, :conditions => ['products.deleted_at is not NULL and variants.sku = ?', self.sku], :readonly => false)
@@ -19,15 +36,6 @@ private
         #TODO-  Currently incorrectly returning to products index instead of /admin/products
       end
     end
-  end
-  
-  def populate_with_mas_data
-    @mas_product = MasProduct.first(:conditions => {:ItemNumber => self.sku})
-    self.cost_price = @mas_product.StdCost
-    if ! @mas_product.Weight.blank?
-      self.weight = @mas_product.Weight.to_i
-    end
-    self.count_on_hand = @mas_product.TotalQtyOnHand.to_i
   end
   
 end
