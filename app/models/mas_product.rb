@@ -8,4 +8,9 @@ class MasProduct < ActiveRecord::Base
     #,
     #:joins => :product,
     #:conditions => ['products.deleted_at is NULL']
+  has_one :mas_product_extended_description, :class_name => 'MasProductExtendedDescription', :foreign_key => 'ExtendedDescriptionKey'
+  
+  def self.extended_description
+    self.mas_product_extended_description.ExtendedDescription
+  end
 end

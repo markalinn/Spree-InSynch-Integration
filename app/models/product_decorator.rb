@@ -1,13 +1,12 @@
 Product.class_eval do
   has_one :mas_product, :through => :master
   before_create :find_existing_deleted_sku
-  after_create :populate_with_mas_data
 
   def cost_price
     self.mas_product.StdCost.to_f if self.mas_product
   end
 
-  def price
+  def master_price
     self.mas_product.StdPrice.to_f if self.mas_product
   end
 
