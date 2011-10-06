@@ -1,6 +1,8 @@
 Product.class_eval do
   has_one :mas_product, :through => :master
   before_create :find_existing_deleted_sku
+  
+  validates :sku, :presence => true
 
   def cost_price
     self.mas_product.StdCost.to_f if self.mas_product
@@ -21,7 +23,7 @@ Product.class_eval do
 private
 
   def find_existing_deleted_sku
-    if self.sku
+    if ! self.sku.blank?
       existing_deleted_variant = Variant.find(:first, :joins => :product, :conditions => ['products.deleted_at is not NULL and variants.sku = ?', self.sku], :readonly => false)
       if existing_deleted_variant
         #Don't create, instead re-enable the old deleted sku
@@ -32,7 +34,6 @@ private
         self.class.connection_pool.checkin(dbconn)
         #Return false so creation of new doesn't occur
         false
-        #TODO-  Currently incorrectly returning to products index instead of /admin/products
       end
     end
   end
