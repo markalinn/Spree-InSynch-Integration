@@ -1,6 +1,9 @@
 Product.class_eval do
   has_one :mas_product, :through => :master
-  before_create :find_existing_deleted_sku
+  #Removed this attempt at trying not to create duplicates!
+  #This proved to re-enable ol product info that was undesired and a fresh page was wanted anyways.
+  #May consider re-enabling in the future. So kept the method available.
+  #before_create :find_existing_deleted_sku
   
   validates :sku, :presence => true
 
