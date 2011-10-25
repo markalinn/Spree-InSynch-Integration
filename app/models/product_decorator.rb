@@ -8,19 +8,19 @@ Product.class_eval do
   validates :sku, :presence => true
 
   def cost_price
-    self.mas_product.StdCost.to_f if self.mas_product
+    mas_product ? mas_product.StdCost.to_f : nil
   end
 
   def master_price
-    self.mas_product.StdPrice.to_f if self.mas_product
+    mas_product ? mas_product.StdPrice.to_f : nil
   end
 
   def weight
-    self.mas_product.Weight.to_f if self.mas_product
+    mas_product ? mas_product.Weight.to_f : nil
   end
 
   def count_on_hand
-    self.mas_product.TotalQtyOnHand.to_i if self.mas_product
+    mas_product ? mas_product.TotalQtyOnHand.to_i : nil
   end
 
 private
