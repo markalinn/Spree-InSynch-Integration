@@ -1,6 +1,7 @@
 <div class="yui-gc">
   <div class="yui-u first">
     <%- locals = {:f => f} %>
+    
     <%= hook :admin_product_form_left, locals do %>
       <%= f.field_container :name do %>
         <%= f.label :name, t("name") %> <span class="required">*</span><br />
@@ -25,12 +26,15 @@
     <%= hook :admin_product_form_right, locals do %>
       <%= f.field_container :price do %>
         <%= f.label :price, t("master_price")%> <span class="required">*</span><br />
+        <%= f.hidden_field :price, :value => @product.price %>
         <%= h @product.price %>
+        <%= f.error_message_on :price %>
       <% end %>
 
       <%= f.field_container :cost_price do %>
         <%= f.label :cost_price, t("cost_price")%><br />
         <%= h @product.cost_price %>
+        <%= f.hidden_field :cost_price, :value => @product.cost_price %>
         <%= f.error_message_on :cost_price %>
       <% end %>
 

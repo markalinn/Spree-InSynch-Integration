@@ -19,6 +19,10 @@ Product.class_eval do
     mas_product ? mas_product.TotalQtyOnHand.to_i : 0
   end
 
+  def mas_ext_desc
+    mas_product ? mas_product.mas_extended_description : nil
+  end
+  
 private
 
   def find_existing_deleted_sku
