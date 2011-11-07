@@ -15,6 +15,11 @@ class MasProduct < ActiveRecord::Base
     mas_product_extended_descriptions.each do |mas_extended_description|
       extended_description = extended_description + mas_extended_description.CommentText.to_s.split('~;~')[0]
     end
-    return extended_description
+    if extended_description.size > 1
+      return extended_description
+    else
+      #Return the Products description if the MAS extended is not populated
+      return self.ItemDescription
+    end
   end
 end
