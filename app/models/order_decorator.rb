@@ -24,57 +24,56 @@ Order.class_eval do
 
     #ADDITIONAL LOGIC on top of Spree's- Record Order to MAS/Insynch table(s)
     #According to ROI need to put in lines before header so it's not picked up prior to lines going in
+    mas_sales_order_line_no = 0
     self.line_items.each do |order_line_item|
+      #Increment number to record in sequence field for MAS
+      mas_sales_order_line_no = mas_sales_order_line_no + 1
+
       mas_sales_order_line = MasSalesOrderLine.new
       mas_sales_order_line.SalesOrderNo = self.number
+      mas_sales_order_line.SequenceNo = mas_sales_order_line_no
       mas_sales_order_line.ItemCode = order_line_item.variant.sku
+      mas_sales_order_line.ItemType = '1'
       mas_sales_order_line.QuantityOrderedOriginal = order_line_item.quantity
+      mas_sales_order_line.OriginalUnitPrice = order_line_item.price
       mas_sales_order_line.save
     end
     mas_sales_order = MasSalesOrder.new
     mas_sales_order.SalesOrderNo = self.number
     mas_sales_order.OrderDate = self.created_at.strftime('%Y%m%d')
+    #TODO- Confirm appropriate ARDiv for consumer sales
+    mas_sales_order.ARDivisionNo  = '02'
+    #Leave blank if new customer
+    #TODO-  Pass in existing cust_no for customers who have ordered prior (ie. reference FromMAS Order info)
+    mas_sales_order.CustomerNo  = ''
+    mas_sales_order.EmailAddress = self.user.email
     mas_sales_order.BillToName = self.bill_address.firstname + ' ' + self.bill_address.lastname
-#BillToAddress1   varchar(30)
-#BillToAddress2   varchar(30)
-#BillToAddress3   varchar(30)
-#BillToCity       varchar(20)
-#BillToState      varchar(2)
-#BillToZipCode    varchar(10)
-#BillToCountryCode varchar(3)
+    mas_sales_order.BillToAddress1 = self.bill_address.address1
+    mas_sales_order.BillToAddress2 = self.bill_address.address2
+    mas_sales_order.BillToCity = self.bill_address.city
+    mas_sales_order.BillToState = self.bill_address.state.name
+    mas_sales_order.BillToZipCode = self.bill_address.zipcode
+    mas_sales_order.BillToCountryCode = self.bill_address.country.iso_name
     mas_sales_order.ShipToName = self.ship_address.firstname + ' ' + self.ship_address.lastname
-#ShipToAddress1   varchar(30)
-#ShipToAddress2   varchar(30)
-#ShipToAddress3   varchar(30)
-#ShipToCity       varchar(20)
-#ShipToState      varchar(2)
-#ShipToZipCode    varchar(10)
-#ShipToCountryCode varchar(3)
-#ShipVia          varchar(15)
-#EmailAddress     varchar(50)
-#Comment          varchar(30)
+    mas_sales_order.ShipToAddress1 = self.ship_address.address1
+    mas_sales_order.ShipToAddress2 = self.ship_address.address2
+    mas_sales_order.ShipToCity = self.ship_address.city
+    mas_sales_order.ShipToState = self.ship_address.state.name
+    mas_sales_order.ShipToZipCode = self.ship_address.zipcode
+    mas_sales_order.ShipToCountryCode = self.ship_address.country.iso_name
+    mas_sales_order.CustomerPONo = self.number
+    mas_sales_order.WarehouseCode = '000'
+    mas_sales_order.ShipVia = self.shipping_method.name
+    #TODO-  Need to set appropriate TaxSchedule to CA for california orders.
+    # OS appears to be the non-taxed value
+    mas_sales_order.TaxSchedule = 'OS'
 #PaymentType      varchar(5)
 #CardholderName   varchar(30)
 #ExpirationDateYear varchar(4)
 #ExpirationDateMonth varchar(2)
 #EncryptedCreditCardNo varchar(24)
-#CreditCardAuthorizationNo varchar(16)
-#CreditCardTransactionID varchar(10)
-#AuthorizationDate varchar(8)
-#AuthorizationTime varchar(6)
-#AuthorizationCodeForDeposit varchar(16)
-#CreditCardTransactionIDForDep varchar(10)
-#PaymentTypeCategory varchar(1)
-#TaxableAmt       decimal(13,2)
-#NonTaxableAmt    decimal(13,2)
-#SalesTaxAmt      decimal(12,2)
 #FreightAmt       decimal(12,2)
-#DepositAmt       decimal(13,2)
-#DateCreated      varchar(8)
-#TimeCreated      varchar(8)
-
     mas_sales_order.save
-
 
     #End additional logic
 
