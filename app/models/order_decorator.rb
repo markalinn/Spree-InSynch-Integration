@@ -63,6 +63,7 @@ Order.class_eval do
     mas_sales_order.ShipToCountryCode = self.ship_address.country.iso_name
     mas_sales_order.CustomerPONo = self.number
     mas_sales_order.WarehouseCode = '000'
+    mas_sales_order.ARDivisionNo = '02'
     mas_sales_order.ShipVia = self.shipping_method.name
     #TODO-  Need to set appropriate TaxSchedule to CA for california orders.
     # OS appears to be the non-taxed value
