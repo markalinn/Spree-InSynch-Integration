@@ -46,7 +46,7 @@ Order.class_eval do
     #Leave blank if new customer
     #TODO-  Pass in existing cust_no for customers who have ordered prior (ie. reference FromMAS Order info)
     mas_sales_order.CustomerNo  = ''
-    mas_sales_order.EmailAddress = self.user.email
+    mas_sales_order.EmailAddress = self.email
     mas_sales_order.BillToName = self.bill_address.firstname + ' ' + self.bill_address.lastname
     mas_sales_order.BillToAddress1 = self.bill_address.address1
     mas_sales_order.BillToAddress2 = self.bill_address.address2
@@ -61,13 +61,17 @@ Order.class_eval do
     mas_sales_order.ShipToState = self.ship_address.state.name
     mas_sales_order.ShipToZipCode = self.ship_address.zipcode
     mas_sales_order.ShipToCountryCode = self.ship_address.country.iso_name
-    mas_sales_order.CustomerPONo = self.number
+    mas_sales_order.CustomerPONo = self.created_at.strftime('%m%d%Y')
     mas_sales_order.WarehouseCode = '000'
     mas_sales_order.ARDivisionNo = '02'
     mas_sales_order.ShipVia = self.shipping_method.name
     #TODO-  Need to set appropriate TaxSchedule to CA for california orders.
     # OS appears to be the non-taxed value
+    # CA needs to be passed for CA
     mas_sales_order.TaxSchedule = 'OS'
+    if mas_sales_order.BillToState.upcase == 'CA'
+      mas_sales_order.TaxSchedule = 'CA'
+    end
 #PaymentType      varchar(5)
 #CardholderName   varchar(30)
 #ExpirationDateYear varchar(4)
