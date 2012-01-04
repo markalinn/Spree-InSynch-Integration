@@ -51,14 +51,14 @@ Order.class_eval do
     mas_sales_order.BillToAddress1 = self.bill_address.address1
     mas_sales_order.BillToAddress2 = self.bill_address.address2
     mas_sales_order.BillToCity = self.bill_address.city
-    mas_sales_order.BillToState = self.bill_address.state.name
+    mas_sales_order.BillToState = self.bill_address.state.name.upcase
     mas_sales_order.BillToZipCode = self.bill_address.zipcode
     mas_sales_order.BillToCountryCode = self.bill_address.country.iso_name
     mas_sales_order.ShipToName = self.ship_address.firstname + ' ' + self.ship_address.lastname
     mas_sales_order.ShipToAddress1 = self.ship_address.address1
     mas_sales_order.ShipToAddress2 = self.ship_address.address2
     mas_sales_order.ShipToCity = self.ship_address.city
-    mas_sales_order.ShipToState = self.ship_address.state.name
+    mas_sales_order.ShipToState = self.ship_address.state.name.upcase
     mas_sales_order.ShipToZipCode = self.ship_address.zipcode
     mas_sales_order.ShipToCountryCode = self.ship_address.country.iso_name
     mas_sales_order.CustomerPONo = self.created_at.strftime('%m%d%Y')
