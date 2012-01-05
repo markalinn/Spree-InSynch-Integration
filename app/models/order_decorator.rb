@@ -73,7 +73,7 @@ Order.class_eval do
     # OS appears to be the non-taxed value
     # CA needs to be passed for CA
     mas_sales_order.TaxSchedule = 'OS'
-    if mas_sales_order.BillToState.upcase == 'CA'
+    if self.bill_address.state.name.upcase == 'CA'
       mas_sales_order.TaxSchedule = 'CA'
     end
 #PaymentType      varchar(5)
