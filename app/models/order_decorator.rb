@@ -45,8 +45,12 @@ Order.class_eval do
     mas_sales_order.ARDivisionNo  = '02'
     #Leave blank if new customer
     #TODO-  Pass in existing cust_no for customers who have ordered prior (ie. reference FromMAS Order info)
-    mas_sales_order.CustomerNo  = ''
     mas_sales_order.EmailAddress = self.email
+    mas_sales_order.CustomerNo  = ''
+    mas_customer = MasCustomer.find(:first, :order => 'CustomerNo',:conditions => {:EmailAddress => self.email})
+      if mas_customer
+        mas_sales_order.CustomerNo  = mas_customer.CustomerNo
+      end
     mas_sales_order.BillToName = self.bill_address.firstname + ' ' + self.bill_address.lastname
     mas_sales_order.BillToAddress1 = self.bill_address.address1
     mas_sales_order.BillToAddress2 = self.bill_address.address2
