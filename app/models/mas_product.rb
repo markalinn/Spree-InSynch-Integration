@@ -11,6 +11,6 @@ class MasProduct < ActiveRecord::Base
   belongs_to :mas_product_extended_description, :class_name => 'MasProductExtendedDescription', :foreign_key => 'ExtendedDescriptionKey'
   
   def mas_extended_description
-    mas_product_extended_description ? mas_product_extended_description.ExtendedDescription : self.ItemDescription
+    mas_product_extended_description ? mas_product_extended_description.ExtendedDescription.to_s : self.ItemDescription
   end
 end
