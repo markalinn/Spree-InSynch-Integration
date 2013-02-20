@@ -1,4 +1,4 @@
-Order.class_eval do
+Spree::Order.class_eval do
   has_one :mas_sales_order, :class_name => 'MasSalesOrder', :foreign_key => 'SalesOrderNo'
   
   #Redo of order number generation to accomodate MAS limitation of 7 characters
@@ -17,10 +17,18 @@ Order.class_eval do
   # Called after transition to complete state when payments will have been processed
   #This is overriding default Spree behavior to also add records into MAS/Insynch tables
   def finalize!
-    update_attribute(:completed_at, Time.now)
-    self.out_of_stock_items = InventoryUnit.assign_opening_inventory(self)
+    touch :completed_at
+    InventoryUnit.assign_opening_inventory(self)
     # lock any optional adjustments (coupon promotions, etc.)
-    adjustments.optional.each { |adjustment| adjustment.update_attribute("locked", true) }
+    adjustments.optional.each { |adjustment| adjustment.update_column('locked', true) }
+    deliver_order_confirmation_email
+
+    self.state_changes.create({
+        :previous_state => 'cart',
+        :next_state     => 'complete',
+        :name           => 'order' ,
+        :user_id        => (User.respond_to?(:current) && User.current.try(:id)) || self.user_id
+    }, :without_protection => true)
 
     #ADDITIONAL LOGIC on top of Spree's- Record Order to MAS/Insynch table(s)
     #According to ROI need to put in lines before header so it's not picked up prior to lines going in

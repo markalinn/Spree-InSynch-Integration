@@ -1,4 +1,4 @@
-User.class_eval do
+Spree::User.class_eval do
   has_one :mas_customer, :class_name => 'MasCustomer', :foreign_key => 'EmailAddress'
 
   def count_on_hand

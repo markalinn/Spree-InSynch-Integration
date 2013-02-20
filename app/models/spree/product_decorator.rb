@@ -1,4 +1,4 @@
-Product.class_eval do
+Spree::Product.class_eval do
   has_one :mas_product, :through => :master
   #Removed this attempt at trying not to create duplicates!
   #This proved to re-enable ol product info that was undesired and a fresh page was wanted anyways.
@@ -32,7 +32,7 @@ private
         #Don't create, instead re-enable the old deleted sku
         dbconn = self.class.connection_pool.checkout
         dbconn.transaction do
-          dbconn.execute("update products set deleted_at = NULL where products.id = #{existing_deleted_variant.product.id}")
+          dbconn.execute("update spree__products set deleted_at = NULL where products.id = #{existing_deleted_variant.product.id}")
         end
         self.class.connection_pool.checkin(dbconn)
         #Return false so creation of new doesn't occur

@@ -11,13 +11,14 @@ Installation
 Add the following to your Gemspec file:
 
 	gem "spree_insynch_integration", :git => 'git://github.com/markalinn/Spree-InSynch-Integration.git'
+	
+You will want to speccify a branch in the gem line above if utilizing older versions of Spree.
 
 Todo
 ====
 
-Everything
+Everything Else
 Test
-0.70.x branch
 
 
 Copyright (c) 2011 Mark Linn, released under the New BSD License
