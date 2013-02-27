@@ -1,0 +1,43 @@
+  <div class="clearfix" data-hook="new_product_attrs">
+    <div class="left">
+      <% unless @product.has_variants? %>
+      <% 
+      	@mas_products = Spree::MasProduct.all(:order => 'ItemNumber')
+      	@existing_products = Spree::MasProduct.all(:joins => :product, :conditions => 'spree_products.deleted_at is NULL')
+      	@new_products = @mas_products - @existing_products
+      %>
+        <%= f.field_container :sku do %>
+          <%= f.label :sku, t(:sku) %><br />
+          <%= f.collection_select :sku, @new_products, :ItemNumber, :ItemNumber, :include_blank => '-Unassigned-' %>
+          <%= f.error_message_on :sku %>
+        <% end %>
+      <% end %>
+      <%= f.field_container :prototype do %>
+        <%= f.label :prototype_id, t(:prototype) %><br />
+        <%= f.collection_select :prototype_id, Spree::Prototype.all, :id, :name, :include_blank => true %>
+      <% end %>
+	</div>
+    <div class="right">
+      <%= f.hidden_field :price, :value => 0 %>
+      <p>
+        <%= f.label :available_on, t(:available_on) %><br />
+        <%= f.error_message_on :available_on %>
+        <%= f.text_field :available_on, :class => 'datepicker', :style => "width:150px", :value => Date.today %>
+      </p>
+    </div>
+
+  </div>
+
+<script type="text/javascript">    
+jQuery("#product_sku").change(function() {
+	product_sku = $(this).val();
+
+	$.ajax({
+		url: "/mas_products/" + product_sku + ".json",
+		success: function(data) {
+				$("#product_name").val(data['mas_product'].ItemDescription);
+				$("#product_price").val(data['mas_product'].StdPrice);
+		  }
+  	});
+ }); 
+</script>
