@@ -1,0 +1,5 @@
+<p data-hook="price">
+	<%= f.label :price, t(:price) %>:<br />
+	      <%= f.hidden_field :price, :value => @product.price %>
+          <%= number_to_currency(@product.price, :unit => '') %>
+</p>
